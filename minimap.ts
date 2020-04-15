@@ -9,24 +9,23 @@ enum MinimapScale {
 //% groups='["Images"]'
 namespace minimap {
 
-    export interface MinimapImage extends Image {
-        minimapScale: MinimapScale;
-    }
+    // TODO: cannot extend native interfaces (https://github.com/microsoft/pxt/issues/6859)
+    // export interface MinimapImage extends Image {
+    //     minimapScale: MinimapScale;
+    // }
 
     //% block="minimap || %scale scale"
     //% scale.defl=MinimapScale.Half
     export function minimap(scale: MinimapScale = MinimapScale.Half) {
         let tilemap = game.currentScene().tileMap;
 
-        // let scale = 2
-
         const numRows = tilemap.areaHeight() >> tilemap.scale
         const numCols = tilemap.areaWidth() >> tilemap.scale
         const tileWidth = 1 << tilemap.scale
 
-        let minimap: MinimapImage = image.create(
+        let minimap: Image = image.create(
             numCols * tileWidth >> scale, 
-            numRows * tileWidth >> scale) as MinimapImage;
+            numRows * tileWidth >> scale)
 
         for (let r = 0; r < numRows; r++) {
             for (let c = 0; c < numCols; c++) {
@@ -44,7 +43,8 @@ namespace minimap {
             }
         }
 
-        minimap.minimapScale = scale;
+        // TODO: https://github.com/microsoft/pxt/issues/6859
+        // minimap.minimapScale = scale;
         
         return minimap
     }
