@@ -7,7 +7,8 @@
     "files": [
         "main.blocks",
         "main.ts",
-        "README.md"
+        "README.md",
+        "minimap.ts"
     ],
     "preferredEditor": "tsprj",
     "testFiles": [
