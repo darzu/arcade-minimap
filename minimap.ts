@@ -89,7 +89,7 @@ namespace minimap {
     export function includeSprite(minimap: Minimap, sprite: Sprite, spriteScale = MinimapSpriteScale.MinimapScale) {
         const scale = Math.max(minimap.scale - spriteScale, 0)
         const x = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale) + minimap.borderWidth
-        const y = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale) + minimap.borderWidth
+        const y = (sprite.y >> minimap.scale) - ((sprite.height / 2) >> scale) + minimap.borderWidth
         renderScaledImage(sprite.image, minimap.image, x, y, scale);
     }
 } 
