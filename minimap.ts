@@ -15,33 +15,38 @@ namespace minimap {
         scale: MinimapScale;
     }
 
+    function renderScaledImage(source: Image, destination: Image, x: number, y: number, scale: MinimapScale) {
+        const tile = source
+        for (let i = 0; i < source.width; i += 1 << scale) {
+            for (let j = 0; j < source.height; j += 1 << scale) {
+                if (source.getPixel(i, j) != 0) {
+                    destination.setPixel(x + (i >> scale), y + (j >> scale), source.getPixel(i, j))
+                }
+            }
+        }
+    }
+
     //% block="minimap || %scale scale"
     //% blockId="create_minimap"
     //% scale.defl=MinimapScale.Half
     export function minimap(scale: MinimapScale = MinimapScale.Half): Minimap {
-        let tilemap = game.currentScene().tileMap;
+        const tilemap = game.currentScene().tileMap;
 
         const numRows = tilemap.areaHeight() >> tilemap.scale
         const numCols = tilemap.areaWidth() >> tilemap.scale
         const tileWidth = 1 << tilemap.scale
 
-        let minimap: Image = image.create(
+        const minimap: Image = image.create(
             numCols * tileWidth >> scale, 
             numRows * tileWidth >> scale)
 
         for (let r = 0; r < numRows; r++) {
             for (let c = 0; c < numCols; c++) {
-                let idx = tilemap.getTileIndex(c, r)
-                let tile = tilemap.getTileImage(idx)
-                let nx = c * tileWidth >> scale
-                let ny = r * tileWidth >> scale
-                for (let i = 0; i < tile.width; i += 1 << scale) {
-                    for (let j = 0; j < tile.height; j += 1 << scale) {
-                        if (tile.getPixel(i, j) != 0) {
-                            minimap.setPixel(nx + (i >> scale), ny + (j >> scale), tile.getPixel(i, j))
-                        }
-                    }
-                }
+                const idx = tilemap.getTileIndex(c, r)
+                const tile = tilemap.getTileImage(idx)
+                const nx = c * tileWidth >> scale
+                const ny = r * tileWidth >> scale
+                renderScaledImage(tile, minimap, nx, ny, scale);
             }
         }
 
@@ -58,5 +63,15 @@ namespace minimap {
     //% minimap.shadow=create_minimap
     export function getImage(minimap: Minimap): Image {
         return minimap.image
+    }
+
+    //% block="draw $sprite on $minimap"
+    //% minimap.shadow=variables_get
+    //% minimap.defl=minimap
+    //% sprite.shadow=variables_get
+    //% sprite.defl=mySprite
+    export function includeSprite(minimap: Minimap, sprite: Sprite) {
+        const scale = minimap.scale
+        renderScaledImage(sprite.image, minimap.image, sprite.left >> scale, sprite.top >> scale, scale);
     }
 } 
