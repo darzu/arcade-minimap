@@ -19,6 +19,8 @@ namespace minimap {
     export interface Minimap {
         image: Image;
         scale: MinimapScale;
+        borderWidth: number;
+        borderColor: number;
     }
 
     function renderScaledImage(source: Image, destination: Image, x: number, y: number, scale: MinimapScale) {
@@ -67,7 +69,9 @@ namespace minimap {
         
         return {
             image: minimap,
-            scale: scale
+            scale: scale,
+            borderWidth,
+            borderColor
         }
     }
 
@@ -84,8 +88,8 @@ namespace minimap {
     //% sprite.defl=mySprite
     export function includeSprite(minimap: Minimap, sprite: Sprite, spriteScale = MinimapSpriteScale.MinimapScale) {
         const scale = Math.max(minimap.scale - spriteScale, 0)
-        const x = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale)
-        const y = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale)
+        const x = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale) + minimap.borderWidth
+        const y = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale) + minimap.borderWidth
         renderScaledImage(sprite.image, minimap.image, x, y, scale);
     }
 } 
