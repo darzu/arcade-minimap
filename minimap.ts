@@ -5,6 +5,12 @@ enum MinimapScale {
     Eighth,
     Sixteenth
 }
+enum MinimapSpriteScale {
+    MinimapScale,
+    Double,
+    Quadruple,
+    Octuple
+}
 //% color=#cfab0c icon="\uf278"
 //% groups='["Images"]'
 namespace minimap {
@@ -71,13 +77,15 @@ namespace minimap {
         return minimap.image
     }
 
-    //% block="draw $sprite on $minimap"
+    //% block="draw $sprite on $minimap || at $spriteScale scale"
     //% minimap.shadow=variables_get
     //% minimap.defl=minimap
     //% sprite.shadow=variables_get
     //% sprite.defl=mySprite
-    export function includeSprite(minimap: Minimap, sprite: Sprite) {
-        const scale = minimap.scale
-        renderScaledImage(sprite.image, minimap.image, sprite.left >> scale, sprite.top >> scale, scale);
+    export function includeSprite(minimap: Minimap, sprite: Sprite, spriteScale = MinimapSpriteScale.MinimapScale) {
+        const scale = Math.max(minimap.scale - spriteScale, 0)
+        const x = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale)
+        const y = (sprite.x >> minimap.scale) - ((sprite.width / 2) >> scale)
+        renderScaledImage(sprite.image, minimap.image, x, y, scale);
     }
 } 
