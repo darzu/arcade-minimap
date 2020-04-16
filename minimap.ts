@@ -26,10 +26,13 @@ namespace minimap {
         }
     }
 
-    //% block="minimap || %scale scale"
+    //% block="minimap || %scale scale with border $borderWidth $borderColor"
     //% blockId="create_minimap"
+    //% expandableArgumentMode="toggle"
     //% scale.defl=MinimapScale.Half
-    export function minimap(scale: MinimapScale = MinimapScale.Half): Minimap {
+    //% borderWidth.defl=2
+    //% borderColor.shadow=colorindexpicker
+    export function minimap(scale: MinimapScale = MinimapScale.Half, borderWidth = 0, borderColor = 0): Minimap {
         const tilemap = game.currentScene().tileMap;
 
         const numRows = tilemap.areaHeight() >> tilemap.scale
@@ -37,15 +40,18 @@ namespace minimap {
         const tileWidth = 1 << tilemap.scale
 
         const minimap: Image = image.create(
-            numCols * tileWidth >> scale, 
-            numRows * tileWidth >> scale)
+            (numCols * tileWidth >> scale) + borderWidth * 2, 
+            (numRows * tileWidth >> scale) + borderWidth * 2)
+
+        if (borderWidth > 0)
+            minimap.fill(borderColor)
 
         for (let r = 0; r < numRows; r++) {
             for (let c = 0; c < numCols; c++) {
                 const idx = tilemap.getTileIndex(c, r)
                 const tile = tilemap.getTileImage(idx)
-                const nx = c * tileWidth >> scale
-                const ny = r * tileWidth >> scale
+                const nx = (c * tileWidth >> scale) + borderWidth
+                const ny = (r * tileWidth >> scale) + borderWidth
                 renderScaledImage(tile, minimap, nx, ny, scale);
             }
         }
