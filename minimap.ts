@@ -8,15 +8,17 @@ enum MinimapScale {
 //% color=#cfab0c icon="\uf278"
 //% groups='["Images"]'
 namespace minimap {
-
-    // TODO: cannot extend native interfaces (https://github.com/microsoft/pxt/issues/6859)
-    // export interface MinimapImage extends Image {
-    //     minimapScale: MinimapScale;
-    // }
+    // TODO: cannot extend native interfaces (https://github.com/microsoft/pxt/issues/6859),
+    //      would prefer to extend Image
+    export interface Minimap {
+        image: Image;
+        scale: MinimapScale;
+    }
 
     //% block="minimap || %scale scale"
+    //% blockId="create_minimap"
     //% scale.defl=MinimapScale.Half
-    export function minimap(scale: MinimapScale = MinimapScale.Half) {
+    export function minimap(scale: MinimapScale = MinimapScale.Half): Minimap {
         let tilemap = game.currentScene().tileMap;
 
         const numRows = tilemap.areaHeight() >> tilemap.scale
@@ -46,6 +48,15 @@ namespace minimap {
         // TODO: https://github.com/microsoft/pxt/issues/6859
         // minimap.minimapScale = scale;
         
-        return minimap
+        return {
+            image: minimap,
+            scale: scale
+        }
+    }
+
+    //% block="$minimap image"
+    //% minimap.shadow=create_minimap
+    export function getImage(minimap: Minimap): Image {
+        return minimap.image
     }
 } 
