@@ -14,6 +14,7 @@ enum MinimapSpriteScale {
 
 
 
+
 //% color=#cfab0c icon="\uf278"
 //% groups='["Images"]'
 namespace minimap {
